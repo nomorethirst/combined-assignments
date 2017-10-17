@@ -94,7 +94,11 @@ public class FizzBuzz {
      * the relevant messages to sysout
      */
     public static void main(String[] args) {
-        throw new NotImplementedException();
+    	String[] messages = messages(1,116);
+    	for (String m: messages) {
+    		System.out.println(m);
+    	}
+    		
     }
 
 }

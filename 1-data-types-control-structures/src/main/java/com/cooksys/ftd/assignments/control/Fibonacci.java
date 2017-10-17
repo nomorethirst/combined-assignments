@@ -1,7 +1,5 @@
 package com.cooksys.ftd.assignments.control;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * The Fibonacci sequence is simply and recursively defined: the first two elements are `1`, and
  * every other element is equal to the sum of its two preceding elements. For example:
@@ -25,15 +23,23 @@ public class Fibonacci {
      */
     public static int atIndex(int i) throws IllegalArgumentException {
     	if ( i < 0 ) {
-    		throw IllegalArgumentException;
+    		throw new IllegalArgumentException();
     	}
-    	else if ( i == 0 || i == 1 ) {
-        	return 1;
-        }
-        else {
-        	
-        }
+    	if ( i < 2 ) {
+    		return 1;
+    	}
+    	int last = 1;
+    	int secondToLast = 1;
+    	int fib = 2;
+    	for (int j = 2; j <= i; j++) {
+    		fib = last + secondToLast;
+    		secondToLast = last;
+    		last = fib;
+    	}
+    	return fib;
     }
+    		
+    
 
     /**
      * Calculates a slice of the fibonacci sequence, starting from a given start index (inclusive) and
@@ -46,7 +52,33 @@ public class Fibonacci {
      *                                  given end is less than the given start
      */
     public static int[] slice(int start, int end) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if (start < 0 || end < 0 || end < start) {
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	// handle case where start == end (so as not to init array of size 0)
+    	if (start == end) {
+    		// This doesn't work b/c test wants "empty" on slice(0,0).  Correct?
+    		//return new int[]{atIndex(start)};
+    		return new int[0];
+    	}
+
+    	// init array of correct size and go through sequence
+    	int[] slice = new int[end-start];
+    	int secondToLast = atIndex(start);
+    	slice[0] = secondToLast;
+    	if (end == start+1) {
+    		return slice;
+    	}
+    	int last = atIndex(start+1);
+    	slice[1] = last;
+    	for (int i = 2; i < slice.length; i++) {
+    		slice[i] = secondToLast + last;
+    		secondToLast = last;
+    		last = slice[i];
+    	}
+    	
+    	return slice;
     }
 
     /**
@@ -57,6 +89,9 @@ public class Fibonacci {
      * @throws IllegalArgumentException if the given count is negative
      */
     public static int[] fibonacci(int count) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if (count < 0) {
+			throw new IllegalArgumentException();
+    	}
+    	return slice(0, count);
     }
 }
