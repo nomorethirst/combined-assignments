@@ -1,6 +1,7 @@
 package com.cooksys.ftd.assignments.control;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.*;
 
 /**
  * FizzBuzz is an old programming exercise.
@@ -26,7 +27,13 @@ public class FizzBuzz {
      * @throws IllegalArgumentException if b is zero
      */
     public static boolean divides(int a, int b) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if ( b == 0 ) {
+    		throw new IllegalArgumentException();
+    	}
+    	else {
+    		return a % b == 0;
+    	}
+        
     }
 
     /**
@@ -41,7 +48,18 @@ public class FizzBuzz {
      * @return a message according to the format above, or null if n is not divisible by either 3 or 5
      */
     public static String message(int n) {
-        throw new NotImplementedException();
+    	if ( !divides(n,3) && !divides(n,5) ) {
+    		return null;
+    	}
+    	else if ( divides(n,3) && divides(n,5) ) {
+    		return String.format("%d: FizzBuzz", n);
+    	}
+    	else if ( divides(n,3) ) {
+    		return String.format("%d: Fizz", n);
+    	}
+    	else { // divides(n,5)
+    		return String.format("%d: Buzz", n);
+    	}
     }
 
     /**
@@ -55,7 +73,20 @@ public class FizzBuzz {
      * @throws IllegalArgumentException if the given end is less than the given start
      */
     public static String[] messages(int start, int end) throws IllegalArgumentException {
-        throw new NotImplementedException();
+        if (end < start) {
+        	throw new IllegalArgumentException();
+        }
+        
+        ArrayList<String> messages = new ArrayList();
+        
+        while ( start < end ) {
+        	String message = message(start++);
+        	if ( message != null ) {
+        		messages.add(message);
+        	}
+        }
+        
+        return messages.toArray(new String[messages.size()]);
     }
 
     /**
