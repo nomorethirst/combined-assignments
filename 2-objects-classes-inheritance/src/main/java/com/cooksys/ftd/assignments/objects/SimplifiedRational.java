@@ -1,8 +1,26 @@
 package com.cooksys.ftd.assignments.objects;
 
+import java.util.stream.IntStream;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SimplifiedRational implements IRational {
+	private int numerator;
+	/**
+	 * @param denominator the denominator to set
+	 */
+	public void setDenominator(int denominator) {
+		this.denominator = denominator;
+	}
+
+	/**
+	 * @param numerator the numerator to set
+	 */
+	public void setNumerator(int numerator) {
+		this.numerator = numerator;
+	}
+
+	private int denominator;
     /**
      * Determines the greatest common denominator for the given values
      *
@@ -12,7 +30,9 @@ public class SimplifiedRational implements IRational {
      * @throws IllegalArgumentException if a <= 0 or b < 0
      */
     public static int gcd(int a, int b) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if (a <= 0 || b < 0)
+    		throw new IllegalArgumentException();
+    	return IntStream.range(1, Math.min(a, b)).filter(x->a%x==0 && b%x==0).max().getAsInt();
     }
 
     /**
@@ -29,7 +49,12 @@ public class SimplifiedRational implements IRational {
      * @throws IllegalArgumentException if the given denominator is 0
      */
     public static int[] simplify(int numerator, int denominator) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    	if (denominator == 0)
+    		throw new IllegalArgumentException("Denominator is 0");
+    	if (numerator == 0)
+    		return new int[]{0,denominator};
+    	int gcd = gcd(Math.abs(numerator), Math.abs(denominator));
+    	return new int[]{numerator/gcd, denominator/gcd};
     }
 
     /**
@@ -45,6 +70,10 @@ public class SimplifiedRational implements IRational {
      * @throws IllegalArgumentException if the given denominator is 0
      */
     public SimplifiedRational(int numerator, int denominator) throws IllegalArgumentException {
+    	if (denominator == 0)
+    		throw new IllegalArgumentException("Denominator is 0");
+    	int[] simplified = simplify(numerator, denominator);
+    	
         throw new NotImplementedException();
     }
 
