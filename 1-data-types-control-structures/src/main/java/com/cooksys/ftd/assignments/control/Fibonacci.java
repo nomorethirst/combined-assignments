@@ -67,9 +67,11 @@ public class Fibonacci {
     	int[] slice = new int[end-start];
     	int secondToLast = atIndex(start);
     	slice[0] = secondToLast;
+    	// handle case where slice is size 1
     	if (end == start+1) {
     		return slice;
     	}
+    	// handle all other cases (slice > 1)
     	int last = atIndex(start+1);
     	slice[1] = last;
     	for (int i = 2; i < slice.length; i++) {

@@ -77,7 +77,7 @@ public class FizzBuzz {
         	throw new IllegalArgumentException();
         }
         
-        ArrayList<String> messages = new ArrayList();
+        ArrayList<String> messages = new ArrayList<String>();
         
         while ( start < end ) {
         	String message = message(start++);
