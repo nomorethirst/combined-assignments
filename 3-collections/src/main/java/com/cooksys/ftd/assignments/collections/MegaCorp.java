@@ -8,6 +8,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.*;
 
 public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
+    HashSet<Capitalist> capSet = new HashSet();
 
     /**
      * Adds a given element to the hierarchy.
@@ -21,7 +22,7 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
      * If the given element has no parent but is a Parent itself,
      * add it to the hierarchy
      * <p>
-     * If the given element has no parent and is not a Parent itself,
+     * If the given element has no parent and is not a Parent (instanceof Capitalist) itself,
      * do not add it and return false
      *
      * @param capitalist the element to add to the hierarchy
@@ -29,7 +30,17 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
      */
     @Override
     public boolean add(Capitalist capitalist) {
-        throw new NotImplementedException();
+	
+	if (capitalist instanceof Capitalist && capitalist.hasParent())
+	    add(capitalist.getParent());
+	else
+	    return false;
+
+	boolean added = capSet.add(capitalist);
+	if (added)
+	    return true;
+	else
+	    return false;
     }
 
     /**
@@ -38,7 +49,10 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
      */
     @Override
     public boolean has(Capitalist capitalist) {
-        throw new NotImplementedException();
+	if (capSet.contains(capitalist))
+	    return true;
+	else
+	    return false;
     }
 
     /**
