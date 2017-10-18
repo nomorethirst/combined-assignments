@@ -39,7 +39,18 @@ public class SimplifiedRational implements IRational {
     public static int gcd(int a, int b) throws IllegalArgumentException {
 	if (a <= 0 || b < 0)
 	    throw new IllegalArgumentException();
-	return IntStream.range(1, Math.min(a, b)).filter(x -> a % x == 0 && b % x == 0).max().getAsInt();
+	if (b==0)
+	    return a;
+        return gcd(b, a%b);
+        // The following worked when testing gcd only, but caused SimplifiedRationalProperties
+        // to go into infinite loop.....why?
+        /*
+	return IntStream
+		.range(1, Math.min(a, b))
+		.filter(x -> a % x == 0 && b % x == 0)
+		.max()
+		.getAsInt();
+		*/
     }
 
     /**
@@ -84,8 +95,8 @@ public class SimplifiedRational implements IRational {
 	if (denominator == 0)
 	    throw new IllegalArgumentException("Denominator is 0");
 	int[] simplified = simplify(numerator, denominator);
-
-	throw new NotImplementedException();
+	this.numerator = simplified[0];
+	this.denominator = simplified[1];
     }
 
     /**
@@ -93,7 +104,7 @@ public class SimplifiedRational implements IRational {
      */
     @Override
     public int getNumerator() {
-	throw new NotImplementedException();
+	return this.numerator;
     }
 
     /**
@@ -101,7 +112,7 @@ public class SimplifiedRational implements IRational {
      */
     @Override
     public int getDenominator() {
-	throw new NotImplementedException();
+	return this.denominator;
     }
 
     /**
@@ -122,7 +133,9 @@ public class SimplifiedRational implements IRational {
      */
     @Override
     public SimplifiedRational construct(int numerator, int denominator) throws IllegalArgumentException {
-	throw new NotImplementedException();
+	if (denominator == 0)
+	    throw new IllegalArgumentException("Denominator is 0");
+	return new SimplifiedRational(numerator, denominator);
     }
 
     /**
@@ -134,7 +147,11 @@ public class SimplifiedRational implements IRational {
      */
     @Override
     public boolean equals(Object obj) {
-	throw new NotImplementedException();
+	if (SimplifiedRational.class.isInstance(obj) && ((SimplifiedRational) obj).getNumerator() == getNumerator()
+		&& ((SimplifiedRational) obj).getDenominator() == getDenominator())
+	    return true;
+	else
+	    return false;
     }
 
     /**
@@ -148,6 +165,8 @@ public class SimplifiedRational implements IRational {
      */
     @Override
     public String toString() {
-	throw new NotImplementedException();
+	int n = getNumerator();
+	int d = getDenominator();
+	return (n < 0 != d < 0 ? "-" : "") + Math.abs(n) + "/" + Math.abs(d);
     }
 }
