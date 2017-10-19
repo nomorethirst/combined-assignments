@@ -34,35 +34,24 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
     @Override
     public boolean add(Capitalist capitalist) {
 	
+	// Check doesn't exist and is right type
 	if (has(capitalist) || !(capitalist instanceof Capitalist))
 	    return false;
 
+	// Check not ParentlessWageSlave
 	if (capitalist instanceof WageSlave && !capitalist.hasParent())
 	    return false;
 	
+	// Add all parents in parentChain recursively
 	if (capitalist.hasParent())
 	    add(capitalist.getParent());
 
+	// After all checks add to capSet
 	if (capSet.add(capitalist))
 	    return true;
 	else
 	    return false;
 	
-	// Most literal interp of method comment header - but no tests pass, why?
-//	if (has(capitalist))
-//	    return false;
-//	
-//	if (capitalist.hasParent())
-//	    if (!has(capitalist.getParent()))
-//                add(capitalist.getParent());
-//	else {
-//	    if (capitalist instanceof Capitalist)
-//		capSet.add(capitalist);
-//	    else
-//		return false;
-//	}
-//	return true;
-
     }
 
     /**
@@ -92,26 +81,19 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
      */
     @Override
     public Set<FatCat> getParents() {
+	
+	// Init return type - Set of Parents
         Set<FatCat> parents = new HashSet<>();
-        for (Capitalist capitalist : capSet) {
-            capSet.add(capitalist);
-            FatCat parent = capitalist instanceof FatCat ? (FatCat) capitalist : capitalist.getParent();
+        
+        // Loop through capSet, test for parents, add all parents in chain
+        for (Capitalist cap : capSet) {
+            FatCat parent = cap instanceof FatCat ? (FatCat) cap : cap.getParent();
             while (parent != null) {
                 parents.add(parent);
                 parent = parent.getParent();
             }
         }
         return parents;
-
-//	HashSet<FatCat> parents = new HashSet<FatCat>();
-//	
-//	for (Capitalist cap: capSet) {
-//	    while (cap.hasParent() && has(cap.getParent())) {
-//		parents.add(cap.getParent());
-//		cap = cap.getParent();
-//	    }
-//	}
-//	return parents.stream().collect(Collectors.toSet());
     }
 
     /**
@@ -122,11 +104,15 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
      */
     @Override
     public Set<Capitalist> getChildren(FatCat fatCat) {
+	
+	// Init return type - Empty HashSet
 	HashSet<Capitalist> children = new HashSet<Capitalist>();
 	
+	// Return empty set if arg fatCat not in capSet
 	if (!has(fatCat))
 	    return children;
 	
+	// Loop through capSet and add caps if parent is arg fatCat
 	for (Capitalist cap: capSet) {
 	    if (cap.getParent() == fatCat)
 		children.add(cap);
@@ -166,10 +152,12 @@ public class MegaCorp implements Hierarchy<Capitalist, FatCat> {
     @Override
     public List<FatCat> getParentChain(Capitalist capitalist) {
 
+	// Init return type - List, return empty if arg is null
 	List<FatCat> parentChain = new ArrayList<FatCat>();
 	if (capitalist == null)
 	    return parentChain;
 
+	// Loop through parent chain and add to list
 	while (capitalist.hasParent() && has(capitalist.getParent())) {
 	    parentChain.add(capitalist.getParent());
 	    capitalist = capitalist.getParent();
