@@ -1,1 +1,6 @@
-<student/>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<student firstName="John" lastName="Doe">
+    <favorite-ide>Text Editor, DotMatrix Printer, PDP 11 button panel</favorite-ide>
+    <favorite-language>PDP 11 Machine Language</favorite-language>
+    <favorite-paradigm>What's a paradigm?</favorite-paradigm>
+</student>
