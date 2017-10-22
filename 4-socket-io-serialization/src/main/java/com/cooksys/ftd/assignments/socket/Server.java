@@ -26,13 +26,12 @@ public class Server extends Utils {
     public static Student loadStudent(String studentFilePath, JAXBContext jaxb) {
 	Unmarshaller unmarshaller = null;
 	Student student = null;
-
 	try {
 	    unmarshaller = jaxb.createUnmarshaller();
 	    student = (Student) unmarshaller.unmarshal(new File(studentFilePath));
+
 	} catch (JAXBException e) {
 	    System.out.println(String.format("Error importing student from %s", studentFilePath));
-	    e.printStackTrace();
 	}
 
         return student;
@@ -48,10 +47,12 @@ public class Server extends Utils {
 	try {
 	    server = new ServerSocket(port);
             System.out.println(String.format("Server listening on port %d...", server.getLocalPort()));
+
 	} catch (IOException e) {
 	    System.out.println("Server could not start.");
-	    e.printStackTrace();
+	    System.exit(-1);
 	}
+
 	return server;
     }
     
@@ -66,10 +67,11 @@ public class Server extends Utils {
             client = server.accept();
             System.out.println(String.format("Accepted connection from %s.", 
         	    	client.getInetAddress().toString()));
+
 	} catch (IOException e) {
 	    System.out.println("Error accepting connection from client.");
-	    e.printStackTrace();
 	}
+
 	return client;
     }
 
@@ -86,6 +88,7 @@ public class Server extends Utils {
      * Following this transaction, the server may shut down or listen for more connections.
      */
     public static void main(String[] args) {
+	// Get JAXBContext and Config
 	String configFilePath = "config/config.xml";
 	JAXBContext jaxb = createJAXBContext();
 	Config config = loadConfig(configFilePath, jaxb);
@@ -93,10 +96,11 @@ public class Server extends Utils {
 	System.out.println("Welcome to the Cook Systems Student marshalling server!");
 	System.out.println();
 	
+	// Start server and wait for client to connect
 	ServerSocket server = startTcpServer(config.getLocal().getPort());
-
 	Socket client = acceptTcpClient(server);
 	
+	// On connection, unmarshal student from file and marshal over socket
 	Student student = loadStudent(config.getStudentFilePath(), jaxb);
 	Marshaller marshaller = null;
 	OutputStream os = null;
@@ -105,22 +109,20 @@ public class Server extends Utils {
 	    os = client.getOutputStream();
 	    marshaller.marshal(student, os);
 	    System.out.println("Student object successfully marshalled over socket - closing connection.");
+
 	} catch (JAXBException e) {
 	    System.out.println("Error creating marshaller.");
-	    e.printStackTrace();
+
 	} catch (IOException e) {
 	    System.out.println("Error marshalling student over socket.");
-	    e.printStackTrace();
-	} 
 
-        finally {
+	} finally {
             try {
-                os.close();
-                client.close();
-                server.close();
+                if (os != null) os.close();
+                if (client != null) client.close();
+                if (server != null) server.close();
             } catch (IOException e) {
                 System.out.println("Error closing system resources.");
-                e.printStackTrace();
             }
         }
     }

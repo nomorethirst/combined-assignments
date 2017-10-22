@@ -28,47 +28,63 @@ public class Client {
 	JAXBContext jaxb = Utils.createJAXBContext();
 	Config config = Utils.loadConfig(configFilePath, jaxb);
 	
+	// Use optional args for host/port
+	if (args.length == 3) {
+	    try {
+		int port = Integer.parseInt(args[2]);
+                config.getRemote().setHost(args[1]);
+                config.getRemote().setPort(port);
+
+	    } catch (NumberFormatException e) {
+		System.out.println("Error parsing port arg to int - using config.xml instead.");
+		System.out.println();
+		System.out.println("usage: java -jar Client [String host int port]");
+		System.out.println();
+	    }
+	}
+	
 	System.out.println("Welcome to the Cook Systems Student unmarshaller client!");
 	System.out.println();
 
+	// Connect to server
 	int port = config.getRemote().getPort();
-	String ipAddr = config.getRemote().getHost();
+	String host = config.getRemote().getHost();
 	Socket socket = null;
 	InputStream is = null;
 	try {
-	    socket = new Socket(ipAddr, port);
+	    socket = new Socket(host, port);
             is = socket.getInputStream();
-            System.out.println(String.format("Connected to server at %s:%d.", ipAddr, port));
+            System.out.println(String.format("Connected to server at %s:%d.", host, port));
+
 	} catch (UnknownHostException e) {
-	    System.out.println(String.format("Unkown host: %s", ipAddr));
-	    e.printStackTrace();
+	    System.out.println(String.format("Error - Unkown host: %s", host));
+	    System.exit(-1);
+
 	} catch (IOException e) {
-	    System.out.println(String.format("Error connecting to %s:%d.", ipAddr, port));
-	    e.printStackTrace();
-	}
+	    System.out.println(String.format("Error connecting to %s:%d.", host, port));
+	    System.exit(-1);
+
+	} 
 	
+	// Unmarshal Student object and print to stdout
 	Unmarshaller unmarshaller = null;
 	Student student = null;
 	try {
 	    unmarshaller = jaxb.createUnmarshaller();
 	    student = (Student) unmarshaller.unmarshal(is);
-            System.out.println(String.format("Student object successfully received:", ipAddr, port));
+            System.out.println(String.format("Student object successfully received:", host, port));
 	    System.out.println(student);
+
 	} catch (JAXBException e) {
 	    System.out.println("Error unmarshalling student object.");
-	    e.printStackTrace();
-	}
-	
-	finally {
+
+	} finally {
 	    try {
-		is.close();
-		socket.close();
+                if (is != null) is.close();
+                if (is != null) socket.close();
 	    } catch (IOException e) {
-		System.out.println("Error closing resources.");
-		e.printStackTrace();
+		System.out.println("Error closing system resources.");
 	    }
 	}
-	
-
     }
 }

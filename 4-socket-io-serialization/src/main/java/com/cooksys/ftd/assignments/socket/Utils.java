@@ -27,9 +27,10 @@ public class Utils {
 	try {
 	    jaxb = JAXBContext.newInstance(Config.class, LocalConfig.class, 
 	    	RemoteConfig.class, Student.class);
+
 	} catch (JAXBException e) {
 	    System.out.println("Error creating JAXBContext");
-	    e.printStackTrace();
+	    System.exit(-1);
 	}
 
 	return jaxb;
@@ -49,9 +50,10 @@ public class Utils {
 	try {
 	    unmarshaller = jaxb.createUnmarshaller();
 	    config = (Config) unmarshaller.unmarshal(new File(configFilePath));
+
 	} catch (JAXBException e) {
 	    System.out.println(String.format("Error importing config from %s", configFilePath));
-	    e.printStackTrace();
+	    System.exit(-1);
 	}
 
         return config;
