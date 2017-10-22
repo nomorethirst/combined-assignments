@@ -90,6 +90,9 @@ public class Server extends Utils {
 	JAXBContext jaxb = createJAXBContext();
 	Config config = loadConfig(configFilePath, jaxb);
 	
+	System.out.println("Welcome to the Cook Systems Student marshalling server!");
+	System.out.println();
+	
 	ServerSocket server = startTcpServer(config.getLocal().getPort());
 
 	Socket client = acceptTcpClient(server);

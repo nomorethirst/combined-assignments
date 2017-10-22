@@ -27,6 +27,9 @@ public class Client {
 	String configFilePath = "config/config.xml";
 	JAXBContext jaxb = Utils.createJAXBContext();
 	Config config = Utils.loadConfig(configFilePath, jaxb);
+	
+	System.out.println("Welcome to the Cook Systems Student unmarshaller client!");
+	System.out.println();
 
 	int port = config.getRemote().getPort();
 	String ipAddr = config.getRemote().getHost();
@@ -35,11 +38,12 @@ public class Client {
 	try {
 	    socket = new Socket(ipAddr, port);
             is = socket.getInputStream();
+            System.out.println(String.format("Connected to server at %s:%d.", ipAddr, port));
 	} catch (UnknownHostException e) {
 	    System.out.println(String.format("Unkown host: %s", ipAddr));
 	    e.printStackTrace();
 	} catch (IOException e) {
-	    System.out.println(String.format("Error connecting to %s:%d", ipAddr, port));
+	    System.out.println(String.format("Error connecting to %s:%d.", ipAddr, port));
 	    e.printStackTrace();
 	}
 	
@@ -48,6 +52,7 @@ public class Client {
 	try {
 	    unmarshaller = jaxb.createUnmarshaller();
 	    student = (Student) unmarshaller.unmarshal(is);
+            System.out.println(String.format("Student object successfully received:", ipAddr, port));
 	    System.out.println(student);
 	} catch (JAXBException e) {
 	    System.out.println("Error unmarshalling student object.");
